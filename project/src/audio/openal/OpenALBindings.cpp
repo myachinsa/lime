@@ -747,11 +747,29 @@ namespace lime {
 	
 	void lime_al_source_queue_buffers (int source, int nb, value buffers) {
 		
-		int* data = val_array_int (buffers);
+		//int* data = val_array_int (buffers);
+		//
+		//if (data) {
+			//
+			//alSourceQueueBuffers (source, nb, (ALuint*)data);
+			//
+		//}
 		
-		if (data) {
+		ALuint id = (ALuint)(uintptr_t)val_data (source);
+		
+		if (!val_is_null (buffers)) {
 			
-			alSourceQueueBuffers (source, nb, (ALuint*)data);
+			int size = val_array_size (buffers);
+			ALuint* data = new ALuint[size];
+			
+			for (int i = 0; i < size; ++i) {
+				
+				data[i] = (ALuint)(uintptr_t)val_data (val_array_i (buffers, i));
+				
+			}
+			
+			alSourceQueueBuffers (id, nb, data);
+			delete[] data;
 			
 		}
 		
